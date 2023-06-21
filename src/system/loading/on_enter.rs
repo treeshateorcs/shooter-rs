@@ -1,8 +1,8 @@
-use crate::resource::{AssetStorage, Misc};
-use bevy::{
-    prelude::{AssetServer, Assets, Image, Res, ResMut},
-    render::render_resource::Extent3d,
+use crate::{
+    resource::{AssetStorage, Misc},
+    util::create_blank_image,
 };
+use bevy::prelude::{AssetServer, Assets, Image, Res, ResMut};
 
 pub fn on_enter(
     asset_server: Res<AssetServer>,
@@ -15,7 +15,7 @@ pub fn on_enter(
     load_folder_or_log(&asset_server, &mut asset_storage, "sounds");
     load_folder_or_log(&asset_server, &mut asset_storage, "terrain");
     load_folder_or_log(&asset_server, &mut asset_storage, "weapons");
-    init_dummy_image(&mut images, &mut misc);
+    misc.dummy_image = Some(create_blank_image(1, 1, &mut images));
 }
 
 fn load_folder_or_log(
@@ -31,16 +31,4 @@ fn load_folder_or_log(
             log::error!("Failed to load assets folder from {}: {:?}", path, error);
         }
     }
-}
-
-fn init_dummy_image(images: &mut Assets<Image>, misc: &mut Misc) {
-    let mut image = Image::default();
-    image.resize(Extent3d {
-        width: 1,
-        height: 1,
-        ..Default::default()
-    });
-
-    let handle = images.add(image);
-    misc.dummy_image = Some(handle);
 }

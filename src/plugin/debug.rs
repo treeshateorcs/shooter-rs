@@ -1,5 +1,5 @@
 use crate::{
-    command::{ActorBotSet, ActorSet, BonusSpawn},
+    command::{ActorBotSet, ActorSet, BonusSpawn, TileBlend},
     component::{ActorConfig, Player},
     data::FONT_PATH,
     model::{AppState, TransformLite},
@@ -17,6 +17,7 @@ use bevy::{
     },
     ecs::system::ResMut,
     input::Input,
+    math::Vec3Swizzles,
     prelude::{
         AssetServer, Color, Commands, Component, KeyCode, Query, Res, Resource, TextBundle, Vec2,
         With,
@@ -179,6 +180,16 @@ fn update_input(
 
     if keyboard.just_pressed(KeyCode::Equals) {
         benchmark.log_summary();
+    }
+
+    if keyboard.just_pressed(KeyCode::Space) {
+        let player_position = players
+            .iter()
+            .next()
+            .map(|t| t.translation.xy())
+            .unwrap_or_default();
+
+        commands.add(TileBlend::new(player_position));
     }
 }
 

@@ -40,7 +40,7 @@ impl Command for ActorSet {
 
         if let ActorType::Human = self.config.actor_type {
             entity_mut.insert(Breath::default());
-            WeaponGive::new(self.entity, &WeaponConfig::PM).write(world);
+            WeaponGive::new(self.entity, &WeaponConfig::SAIGA_12K).write(world);
         }
     }
 }

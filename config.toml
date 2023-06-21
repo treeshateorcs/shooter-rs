@@ -1,7 +1,7 @@
 [display]
-fullscreen = true
-window_size_x = 800
-window_size_y = 800
+fullscreen = false
+window_size_x = 1200
+window_size_y = 1200
 v_sync = false
 
 [audio]
@@ -12,4 +12,4 @@ mouse_sensitivity = 0.003
 
 [misc]
 laser_sight = false
-debug = false
+debug = true

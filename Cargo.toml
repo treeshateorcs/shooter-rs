@@ -4,9 +4,9 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Aunmag <aunmag@gmail.com>"]
 
-[profile.release]
-codegen-units = 1
-lto = "fat"
+# [profile.release]
+# codegen-units = 1
+# lto = "fat"
 
 [dependencies]
 anyhow = "1.0"

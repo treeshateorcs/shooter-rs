@@ -4,6 +4,18 @@ use std::{
     ops::Neg,
 };
 
+pub fn round_by(value: f32, round: f32) -> f32 {
+    return (value / round).round() * round;
+}
+
+pub fn floor_by(value: f32, floor: f32) -> f32 {
+    return (value / floor).floor() * floor;
+}
+
+pub fn trunc_by(value: f32, floor: f32) -> f32 {
+    return (value / floor).trunc() * floor;
+}
+
 pub fn interpolate(min: f32, max: f32, blend: f32) -> f32 {
     return min + (max - min) * blend.clamp(0.0, 1.0);
 }

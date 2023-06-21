@@ -44,7 +44,7 @@ use crate::{
     plugin::DebugPlugin,
     resource::{
         AssetStorage, AudioStorage, AudioTracker, Config, HeartbeatResource, HitResource, Misc,
-        Scenario,
+        Scenario, TileStorage,
     },
     scenario::WavesScenario,
     util::ext::AppExt,
@@ -102,6 +102,7 @@ fn main() {
         .insert_resource(Misc::default())
         .insert_resource(config)
         .insert_resource(Scenario::new(WavesScenario::new()))
+        .insert_resource(TileStorage::new())
         .insert_resource(system::game::AmbienceFxData::default())
         .insert_resource(system::game::CollisionSystemData::default())
         .insert_resource(system::game::WeaponData::default())

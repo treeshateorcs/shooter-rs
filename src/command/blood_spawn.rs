@@ -2,6 +2,7 @@ use crate::{
     data::{LAYER_BLUFF, PIXELS_PER_METER},
     material::BloodMaterial,
     resource::Misc,
+    util::math::floor_by,
 };
 use bevy::{
     ecs::system::Command,
@@ -20,9 +21,9 @@ pub struct BloodSpawn {
 
 impl Command for BloodSpawn {
     fn write(mut self, world: &mut World) {
-        self.position.x = (self.position.x * PIXELS_PER_METER).floor() / PIXELS_PER_METER;
-        self.position.y = (self.position.y * PIXELS_PER_METER).floor() / PIXELS_PER_METER;
-        let size_px = (self.size * PIXELS_PER_METER / 2.0).floor() * 2.0; // size must be even
+        self.position.x = floor_by(self.position.x, PIXELS_PER_METER);
+        self.position.y = floor_by(self.position.y, PIXELS_PER_METER);
+        let size_px = floor_by(self.size * PIXELS_PER_METER, 2.0); // size must be even
         self.size = size_px / PIXELS_PER_METER;
 
         let time = world.resource::<Time>().elapsed();

@@ -6,8 +6,9 @@ mod heartbeat;
 mod hit;
 mod misc;
 mod scenario;
+mod tile_storage;
 
 pub(crate) use self::{
     asset_storage::*, audio_storage::*, audio_tracker::*, config::*, heartbeat::*, hit::*, misc::*,
-    scenario::*,
+    scenario::*, tile_storage::*,
 };
