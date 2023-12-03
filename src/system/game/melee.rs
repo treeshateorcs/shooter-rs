@@ -13,7 +13,7 @@ use bevy::{
 };
 
 pub fn melee(
-    attackers: Query<(Entity, &Actor, &Transform), Without<Weapon>>,
+    attackers: Query<(Entity, &Actor, &Transform), Without<Weapon>>, // TODO: fix
     targets: Query<(Entity, &Actor, &Transform)>,
     mut hits: ResMut<HitResource>,
     mut audio: ResMut<AudioTracker>,

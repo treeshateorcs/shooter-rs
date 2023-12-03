@@ -28,6 +28,7 @@ impl Default for WeaponData {
     }
 }
 
+// TODO: fix
 pub fn weapon(
     mut query: Query<(
         Entity,

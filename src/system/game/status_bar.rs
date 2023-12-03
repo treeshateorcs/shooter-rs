@@ -13,6 +13,7 @@ const INTERPOLATION: f32 = 8.0;
 const PULSE: Duration = Duration::from_millis(500);
 
 pub fn status_bar(
+    // TODO: fix weapon
     targets: Query<(&Actor, &Health, Option<&Weapon>, &Children)>, // TODO: try to simplify
     handles: Query<&Handle<StatusBarMaterial>>,
     mut assets: ResMut<Assets<StatusBarMaterial>>,
