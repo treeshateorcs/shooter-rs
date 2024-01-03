@@ -101,11 +101,11 @@ impl Zoom {
         self.value += (self.value_target - self.value) * self.speed.delta(delta);
         self.value = Self::clamp(self.value);
 
-        if !self.reset_time.is_zero() && time > self.reset_time {
-            self.value_target = Self::DEFAULT;
-            self.speed = Self::SPEED_RESET;
-            self.reset_time = Duration::ZERO;
-        }
+        // if !self.reset_time.is_zero() && time > self.reset_time {
+        //     self.value_target = Self::DEFAULT;
+        //     self.speed = Self::SPEED_RESET;
+        //     self.reset_time = Duration::ZERO;
+        // }
     }
 
     pub fn add(&mut self, zoom: f32, time: Duration) {

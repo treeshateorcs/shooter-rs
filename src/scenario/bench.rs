@@ -58,7 +58,8 @@ impl BenchScenario {
                 transform: TransformLite::default(),
             });
 
-            commands.add(ActorBotSet(entity));
+            commands.add(ActorBotSet { entity, skill: 1.0 });
+
             self.spawned += 1;
         }
     }

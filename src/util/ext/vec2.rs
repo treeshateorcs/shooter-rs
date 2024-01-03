@@ -1,14 +1,19 @@
-use bevy::math::Vec2;
+use bevy::{
+    math::{Quat, Vec2},
+    prelude::Vec3Swizzles,
+};
 
+#[allow(clippy::wrong_self_convention)]
 pub trait Vec2Ext {
     fn from_length(length: f32, angle: f32) -> Self;
-
+    fn rotate_by(self, angle: f32) -> Self;
+    fn rotate_around(self, pivot: Self, angle: f32) -> Self;
     fn angle(&self) -> f32;
-
-    fn angle_to(self, other: Self) -> f32;
-
+    fn angle_to(self, target: Self) -> f32;
+    fn distance_squared(self, target: Self) -> f32;
+    fn is_close(self, target: Self, threshold: f32) -> bool;
+    fn is_far(self, target: Self, threshold: f32) -> bool;
     fn is_longer_than(&self, value: f32) -> bool;
-
     fn is_shorter_than(&self, value: f32) -> bool {
         return !self.is_longer_than(value);
     }
@@ -19,12 +24,32 @@ impl Vec2Ext for Vec2 {
         return Self::from_angle(angle) * length;
     }
 
+    fn rotate_by(self, angle: f32) -> Self {
+        return (Quat::from_rotation_z(angle) * self.extend(0.0)).xy();
+    }
+
+    fn rotate_around(self, pivot: Self, angle: f32) -> Self {
+        return pivot + (self - pivot).rotate_by(angle);
+    }
+
     fn angle(&self) -> f32 {
         return f32::atan2(self.y, self.x);
     }
 
-    fn angle_to(self, other: Self) -> f32 {
-        return (other - self).angle();
+    fn angle_to(self, target: Self) -> f32 {
+        return (target - self).angle();
+    }
+
+    fn distance_squared(self, target: Self) -> f32 {
+        return (self - target).length_squared();
+    }
+
+    fn is_close(self, target: Self, threshold: f32) -> bool {
+        return self.distance_squared(target) < threshold * threshold;
+    }
+
+    fn is_far(self, target: Self, threshold: f32) -> bool {
+        return !self.is_close(target, threshold);
     }
 
     fn is_longer_than(&self, value: f32) -> bool {

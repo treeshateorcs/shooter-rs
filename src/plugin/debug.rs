@@ -1,6 +1,6 @@
 use crate::{
-    command::{ActorBotSet, ActorSet, BonusSpawn},
-    component::{ActorConfig, Player},
+    command::{ActorBotSet, ActorSet, BonusSpawn, WeaponSet},
+    component::{ActorConfig, Player, WeaponConfig},
     data::FONT_PATH,
     model::{AppState, TransformLite},
     resource::AudioTracker,
@@ -101,9 +101,7 @@ fn update_input(
     keyboard: Res<Input<KeyCode>>,
     mut commands: Commands,
 ) {
-    let bonus_level = if keyboard.just_pressed(KeyCode::Key0) {
-        0
-    } else if keyboard.just_pressed(KeyCode::Key1) {
+    let bonus_level = if keyboard.just_pressed(KeyCode::Key1) {
         1
     } else if keyboard.just_pressed(KeyCode::Key2) {
         2
@@ -115,6 +113,10 @@ fn update_input(
         5
     } else if keyboard.just_pressed(KeyCode::Key6) {
         6
+    } else if keyboard.just_pressed(KeyCode::Key9) {
+        9
+    } else if keyboard.just_pressed(KeyCode::Key0) {
+        0
     } else {
         -1
     };
@@ -129,7 +131,9 @@ fn update_input(
         position.translation += Vec2::from_length(2.0, position.direction);
 
         if bonus_level == 0 {
-            spawn_actor(&mut commands, position);
+            spawn_actor(&mut commands, position, &ActorConfig::ZOMBIE);
+        } else if bonus_level == 9 {
+            spawn_actor(&mut commands, position, &ActorConfig::HUMAN);
         } else {
             spawn_bonus(&mut commands, position.translation, bonus_level as u8);
         }
@@ -140,15 +144,16 @@ fn spawn_bonus(commands: &mut Commands, position: Vec2, level: u8) {
     commands.add(BonusSpawn::new(position, level));
 }
 
-fn spawn_actor(commands: &mut Commands, transform: TransformLite) {
+fn spawn_actor(commands: &mut Commands, transform: TransformLite, config: &'static ActorConfig) {
     let entity = commands.spawn_empty().id();
 
     commands.add(ActorSet {
         entity,
-        config: &ActorConfig::ZOMBIE,
+        config,
         skill: 1.0,
         transform,
     });
 
-    commands.add(ActorBotSet(entity));
+    commands.add(ActorBotSet { entity, skill: 1.0 });
+    commands.add(WeaponSet::new(entity, Some(&WeaponConfig::PM)));
 }

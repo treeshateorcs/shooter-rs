@@ -43,7 +43,7 @@ pub fn analyze(
 
                 if a1.config.kind == a2.config.kind {
                     let distance = (p1 - p2).length_squared();
-                    let distance_max = bot.spread * 2.0;
+                    let distance_max = bot.config.spread * 2.0;
 
                     if distance < distance_max * distance_max {
                         if teammates.len() < TEAMMATES_MAX {
@@ -53,7 +53,7 @@ pub fn analyze(
                         }
                     }
                 } else {
-                    let position_meet = find_meet_point(p1, i1.velocity, p2, i2.velocity);
+                    let position_meet = find_meet_point(p1, i1.velocity.length(), p2, i2.velocity);
                     let distance = (p1 - position_meet).length_squared();
 
                     if distance < enemy_distance {
@@ -61,6 +61,11 @@ pub fn analyze(
                         enemy_distance = distance;
                     }
                 }
+            }
+
+            // TODO: fix
+            if bot.enemy.is_none() {
+                println!("SOMEHOW NO ENEMY!");
             }
 
             bot.teammates = teammates.iter().map(|t| t.0).collect();

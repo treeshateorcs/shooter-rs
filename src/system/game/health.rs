@@ -6,23 +6,24 @@ use crate::{
     resource::{AudioTracker, Config},
 };
 use bevy::{
-    ecs::system::{Query, Res, ResMut},
+    ecs::{system::{Query, Res, ResMut}, query::Has},
     math::Vec3Swizzles,
     prelude::{Commands, DespawnRecursiveExt, Entity, EventWriter, Transform},
 };
+use crate::component::Player;
 
 const BLOOD_MIN: f32 = 0.1;
 const BLOOD_FACTOR_ON_DAMAGE: f32 = 24.0;
 const BLOOD_FACTOR_ON_DEATH: f32 = 16.0;
 
 pub fn health(
-    mut query: Query<(Entity, &Actor, &mut Health, &Transform)>,
+    mut query: Query<(Entity, &Actor, &mut Health, &Transform, Has<Player>)>,
     mut death_events: EventWriter<ActorDeathEvent>,
     mut audio: ResMut<AudioTracker>,
     mut commands: Commands,
     config: Res<Config>,
 ) {
-    for (entity, actor, mut health, transform) in query.iter_mut() {
+    for (entity, actor, mut health, transform, is_player) in query.iter_mut() {
         let actor = actor.config;
         let point = transform.translation.xy();
         let damage = health.get_damage();
@@ -49,7 +50,7 @@ pub fn health(
                 });
 
                 commands.add(ActorRelease(entity));
-                death_events.send(ActorDeathEvent::new(actor.kind, point));
+                death_events.send(ActorDeathEvent::new(actor.kind, point, is_player));
                 blood += actor.radius * BLOOD_FACTOR_ON_DEATH;
                 commands.entity(entity).despawn_recursive();
             }

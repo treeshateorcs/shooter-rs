@@ -44,7 +44,7 @@ impl Command for ActorSet {
 
         if let ActorKind::Human = self.config.kind {
             entity_mut.insert(Breath::default());
-            WeaponSet::new(self.entity, Some(&WeaponConfig::PM)).apply(world);
+            WeaponSet::new(self.entity, Some(&WeaponConfig::MP_27)).apply(world);
         }
     }
 }

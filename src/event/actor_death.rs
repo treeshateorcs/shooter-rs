@@ -6,4 +6,5 @@ use derive_more::Constructor;
 pub struct ActorDeathEvent {
     pub kind: ActorKind,
     pub position: Vec2,
+    pub is_player: bool,
 }

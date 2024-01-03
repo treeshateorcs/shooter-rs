@@ -1,7 +1,7 @@
 [display]
 fullscreen = true
-window_size_x = 800
-window_size_y = 800
+window_size_x = 1920
+window_size_y = 1080
 v_sync = false
 
 [audio]
@@ -12,5 +12,5 @@ mouse_sensitivity = 0.003
 
 [misc]
 laser_sight = false
-debug = false
-bench = false
+debug = true
+scenario = "waves"

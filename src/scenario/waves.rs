@@ -1,11 +1,11 @@
 use crate::{
-    command::{ActorBotSet, ActorPlayerSet, ActorSet, BonusSpawn, Notify},
-    component::{Actor, ActorConfig, ActorKind, Health},
+    command::{ActorBotSet, ActorPlayerSet, ActorSet, BonusSpawn, Notify, WeaponSet},
+    component::{Actor, ActorConfig, ActorKind, Health, WeaponConfig},
     event::ActorDeathEvent,
     model::TransformLite,
     resource::{Scenario, ScenarioLogic},
     util::{
-        ext::{Pcg32Ext, Vec2Ext},
+        ext::{RngExt, Vec2Ext},
         math::interpolate,
     },
 };
@@ -20,11 +20,28 @@ use rand_pcg::Pcg32;
 use std::{any::Any, f32::consts::PI, time::Duration};
 
 const WAVE_FINAL: u8 = 6;
-const WAVE_SIZE_INITIAL: u16 = 5;
-const ZOMBIE_SPAWN_DISTANCE_MIN: f32 = 20.0;
-const ZOMBIE_SPAWN_DISTANCE_MAX: f32 = 60.0;
+
+// const WAVE_SIZE_INITIAL: u16 = 5;
+// const ZOMBIE_SPAWN_DISTANCE_MIN: f32 = 20.0;
+// const ZOMBIE_SPAWN_DISTANCE_MAX: f32 = 60.0;
+
+const WAVES: &[(u16, f32, f32)] = &[
+    (5, 0.0, 0.0),
+    (25, 0.0, 0.0),
+    (50, 0.02, 0.0),
+    (75, 0.1, 0.0),
+    (100, 0.2, 0.0),
+    (125, 0.3, 0.01),
+    (150, 0.3, 0.1),
+];
+
+const WAVE_SIZE_INITIAL: u16 = 1;
+
+const ZOMBIE_SPAWN_DISTANCE_MIN: f32 = 4.0;
+const ZOMBIE_SPAWN_DISTANCE_MAX: f32 = 6.0;
 const ZOMBIE_SKILL_MIN: f32 = 1.0;
 const ZOMBIE_SKILL_MAX: f32 = 1.8;
+
 const BONUSES_PER_WAVE: f32 = 3.0;
 const GAME_OVER_TEXT_DURATION: Duration = Duration::from_secs(8);
 
@@ -38,10 +55,10 @@ enum Task {
 impl Task {
     fn get_timeout(&self) -> Duration {
         return match self {
-            Self::StartNextWave => Duration::from_secs(2),
-            Self::SpawnZombie => Duration::from_millis(800),
+            Self::StartNextWave => Duration::from_secs(0),
+            Self::SpawnZombie => Duration::from_millis(50),
             Self::CheckWaveCompletion => Duration::from_secs(2),
-            Self::CompleteWave => Duration::from_secs(4),
+            Self::CompleteWave => Duration::from_secs(0),
         };
     }
 }
@@ -124,7 +141,7 @@ impl WavesScenario {
             }
             Task::CheckWaveCompletion => {
                 commands.add(CountZombies);
-                log::debug!("Checking for wave completion");
+                log::trace!("Checking for wave completion");
                 return Task::CheckWaveCompletion;
             }
             Task::CompleteWave => {
@@ -211,7 +228,9 @@ impl ScenarioLogic for WavesScenario {
             {
                 commands.add(BonusSpawn::new(event.position, self.wave));
             }
-        } else {
+        }
+
+        if event.is_player {
             commands.add(Notify {
                 text: "Game over".into(),
                 text_small: "You died. Press [ESC] to exit".into(),
@@ -266,7 +285,19 @@ impl Command for SpawnZombie {
         }
         .apply(world);
 
-        ActorBotSet(entity).apply(world);
+        ActorBotSet {
+            entity,
+            skill: self.skill,
+        }
+        .apply(world);
+
+        // TODO: generate random weapon by level
+        // TODO: don't play sound
+        // if thread_rng().gen() {
+        WeaponSet::new(entity, Some(&WeaponConfig::PM)).apply(world);
+        // } else {
+        //     WeaponSet::new(entity, Some(&WeaponConfig::AKS_74U)).apply(world);
+        // }
     }
 }
 
